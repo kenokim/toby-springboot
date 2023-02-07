@@ -3,6 +3,9 @@ package com.example.tobyspringboot;
 import org.springframework.beans.factory.config.BeanDefinitionVisitor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,9 +22,12 @@ public class TobySpringbootApplication {
             servletContext.addServlet("hello", new HttpServlet() {
                 @Override
                 protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                    resp.setStatus(200);
-                    resp.setHeader("Content-Type", "text/plain");
-                    resp.getWriter().println("Hello Servlet");
+                    String name = req.getParameter("name");
+                    // HttpStatus (enum)클래스에 value 메소드
+                    resp.setStatus(HttpStatus.OK.value());
+                    // string 으로 하드코딩 할 경우 오타의 위험이 있으므로, enum type 을 활용하자.
+                    resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+                    resp.getWriter().println("Hello " + name);
                 }
             }).addMapping("/hello");
         });
